@@ -80,7 +80,14 @@ describe('backend routes', () => {
       message: 'You do not have access to view this page',
       status: 403,
     });
-  });
+  })
+
+  it('should return a list of users if signed in as admin', async () => {
+    const [agent, user] = await registerAndSignIn({ email: 'admin' })
+    const res = await agent.get('/api/v1/users')
+
+    expect(res.body).toEqual([{ ...user }])
+  })
 
   /////////////////// new tests above ///////////////////
 })
