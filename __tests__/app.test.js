@@ -11,8 +11,4 @@ describe('backend routes', () => {
   afterAll(() => {
     pool.end();
   });
-  
-  it('placeholder', async () => {
-    expect(1).toEqual(1);
-  });
 });
