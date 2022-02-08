@@ -53,6 +53,8 @@ describe('backend routes', () => {
 
     const me = await agent.get('/api/v1/users/me')
 
+    console.log("ME", me.body)
+
     expect(me.body).toEqual({
       ...user,
       exp: expect.any(Number),
