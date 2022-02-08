@@ -27,7 +27,7 @@ const registerAndSignIn = async (userProps = {}) => {
 };
 
 
-describe('backend routes', () => {
+describe('backend user routes', () => {
   beforeEach(() => {
     return setup(pool)
   })
@@ -52,8 +52,6 @@ describe('backend routes', () => {
     const [agent, user] = await registerAndSignIn()
 
     const me = await agent.get('/api/v1/users/me')
-
-    console.log("ME", me.body)
 
     expect(me.body).toEqual({
       ...user,
@@ -88,6 +86,5 @@ describe('backend routes', () => {
 
     expect(res.body).toEqual([{ ...user }])
   })
-
-  /////////////////// new tests above ///////////////////
 })
+

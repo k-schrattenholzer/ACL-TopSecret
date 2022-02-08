@@ -1,0 +1,39 @@
+const pool = require('../lib/utils/pool')
+const setup = require('../data/setup')
+// const request = require('supertest')
+// const app = require('../lib/app')
+
+const testUser = {
+  firstName: 'Dinky',
+  lastName: 'Kong',
+  email: 'dinky@kong.com',
+  password: '12345',
+}
+
+const registerAndSignIn = async (userProps = {}) => {
+  const password = userProps.password ?? testUser.password
+
+  const agent = request.agent(app)
+
+  const user = await UserService.create({ ...testUser, ...userProps })
+
+  const { email } = user
+
+  await agent.post('/api/v1/users/sessions').send({ email, password })
+
+  return [agent, user]
+};
+
+describe('backend secret routes', () => {
+  beforeEach(() => {
+    return setup(pool)
+  })
+
+  afterAll(() => {
+    pool.end()
+  })
+
+  it('is a placeholder', () => {
+    expect(1).toEqual(1)
+  })
+})
