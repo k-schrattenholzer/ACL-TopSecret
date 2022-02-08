@@ -62,5 +62,14 @@ describe('backend routes', () => {
     })
   })
 
+  it('should return a 401 when signed out and listing all users', async () => {
+    const res = await request(app).get('/api/v1/users')
+
+    expect(res.body).toEqual({
+      message: 'You must be signed in to continue',
+      status: 401,
+    })
+  })
+
   /////////////////// new tests above ///////////////////
 })
