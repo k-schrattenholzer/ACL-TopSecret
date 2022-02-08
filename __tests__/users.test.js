@@ -24,7 +24,9 @@ const registerAndSignIn = async (userProps = {}) => {
   await agent.post('/api/v1/users/sessions').send({ email, password })
 
   return [agent, user]
-};
+}
+
+const agent = request.agent(app)
 
 
 describe('backend user routes', () => {
@@ -37,7 +39,7 @@ describe('backend user routes', () => {
   })
 
   it('creates a new user', async () => {
-    const res = await request(app).post('/api/v1/users').send(testUser)
+    const res = await request(app).post('/api/v1/users/register').send(testUser)
     const { firstName, lastName, email } = testUser
 
     expect(res.body).toEqual({
@@ -46,6 +48,16 @@ describe('backend user routes', () => {
       lastName,
       email,
     })
+  })
+
+  it('logs a user in', async () => {
+    const [agent] = await registerAndSignIn()
+
+    const res = await agent.post('/api/v1/users/sessions').send(testUser);
+
+    expect(res.body).toEqual({
+      message: 'Signed in successfully!',
+    });
   })
 
   it('returns the current user', async () => {
@@ -86,5 +98,15 @@ describe('backend user routes', () => {
 
     expect(res.body).toEqual([{ ...user }])
   })
+
+  it('logs a user out', async () => {
+    const res = await agent.delete('/api/v1/users/sessions').send(testUser);
+
+    expect(res.body).toEqual({
+      success: true,
+      message: 'You are now logged out.',
+    });
+  });
+
 })
 
