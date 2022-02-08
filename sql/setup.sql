@@ -13,7 +13,7 @@ CREATE TABLE secrets (
   title TEXT NOT NULL,
   description TEXT NOT NULL,
   user_id BIGINT NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES books(id),
+  FOREIGN KEY (user_id) REFERENCES users(id),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
