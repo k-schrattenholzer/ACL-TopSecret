@@ -39,11 +39,10 @@ describe('backend secret routes', () => {
     pool.end()
   })
 
-  it('posts a new secret, when a user is signed in', async () => {
+  it('should post a new secret, only when a user is signed in', async () => {
     const [agent, user] = await registerAndSignIn()
 
     const newSecret = await agent.post('/api/v1/secrets').send({ ...testSecret, user_id: user.id})
-     console.log('-----------------newSecret-----------------',newSecret.body)
 
     expect(newSecret.body).toEqual({
       id: expect.any(String),
@@ -52,4 +51,16 @@ describe('backend secret routes', () => {
       created_at: expect.any(String)
     })
   })
+
+  it('should error when a user tries to post a secret & is not logged in', async () => {
+
+    const fraudSecret = await request(app).post('/api/v1/secrets').send({ ...testSecret, user_id: 6})
+
+    console.log('-----------------fraudSecret-----------------',fraudSecret.body)
+    
+    expect(fraudSecret.body).toEqual({ status: 401, message: 'You must be signed in to continue' })
+  })
 })
+
+// READABLE CONSOLE LOG TEMPLATE
+// console.log('-----------------newSecret-----------------',newSecret.body)
