@@ -12,8 +12,8 @@ const testUser = {
 }
 
 const testSecret = {
-  title: 'Life on Earth',
-  description: 'I feel like aliens & ufos are ignoring me.',
+  title: 'Centipedes',
+  description: 'Shoot - that lil dude sure knows how to wiggle.'
 }
 
 const registerAndSignIn = async (userProps = {}) => {
@@ -59,6 +59,26 @@ describe('backend secret routes', () => {
     console.log('-----------------fraudSecret-----------------',fraudSecret.body)
     
     expect(fraudSecret.body).toEqual({ status: 401, message: 'You must be signed in to continue' })
+  })
+
+  it('should update an existing secret for a user', async () => {
+    const [agent, user] = await registerAndSignIn()
+
+    const newSecret = await agent.post('/api/v1/secrets').send({ ...testSecret, user_id: user.id})
+
+    const updatedSecret = await agent.patch('/api/v1/secrets').send({
+      title: 'Centipede',
+      description: 'Hot Dang - that lil bug sure knows how to wiggle.',
+      user_id: user.id
+    })
+
+    expect(updatedSecret.body).toEqual({
+      id: expect.any(String),
+      title: 'Centipede',
+      description: 'Hot Dang - that lil bug sure knows how to wiggle.',
+      user_id: user.id,
+      created_at: expect.any(String)
+    })
   })
 })
 
