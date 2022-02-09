@@ -55,32 +55,22 @@ describe('backend secret routes', () => {
   it('should error when a user tries to post a secret & is not logged in', async () => {
 
     const fraudSecret = await request(app).post('/api/v1/secrets').send({ ...testSecret, user_id: 6})
-
-    console.log('-----------------fraudSecret-----------------',fraudSecret.body)
-    
+   
     expect(fraudSecret.body).toEqual({ status: 401, message: 'You must be signed in to continue' })
   })
 
-  it('should update an existing secret for a user', async () => {
+  it('should return a list of secrets for a logged in user', async () => {
     const [agent, user] = await registerAndSignIn()
 
     const newSecret = await agent.post('/api/v1/secrets').send({ ...testSecret, user_id: user.id})
+    
+    const allSecrets = await agent.get('/api/v1/secrets')
 
-    const updatedSecret = await agent.patch('/api/v1/secrets').send({
-      title: 'Centipede',
-      description: 'Hot Dang - that lil bug sure knows how to wiggle.',
-      user_id: user.id
-    })
-
-    expect(updatedSecret.body).toEqual({
+    expect(allSecrets.body).toEqual(expect.arrayContaining([{
       id: expect.any(String),
-      title: 'Centipede',
-      description: 'Hot Dang - that lil bug sure knows how to wiggle.',
+      ...testSecret,
       user_id: user.id,
       created_at: expect.any(String)
-    })
+    }]))
   })
 })
-
-// READABLE CONSOLE LOG TEMPLATE
-// console.log('-----------------newSecret-----------------',newSecret.body)
